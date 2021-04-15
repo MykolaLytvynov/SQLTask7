@@ -4,9 +4,8 @@ import java.sql.Connection;
 
 public class Menu {
 
-    public static void main(String[] args) {
-        Menu menu = new Menu();
-        menu.printMenu();
+    public void getMenu () {
+        printMenu();
     }
 
     private void printMenu () {
@@ -18,8 +17,6 @@ public class Menu {
                 "e. Add a student to the course (from a list)\n" +
                 "f. Remove the student from one of his or her courses";
         System.out.println(menu);
-
-
 
     }
 

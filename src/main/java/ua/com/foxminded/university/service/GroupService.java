@@ -2,18 +2,12 @@ package ua.com.foxminded.university.service;
 
 import ua.com.foxminded.university.dao.CrudOperations;
 
+import java.util.List;
+import java.util.Optional;
 
-public class GroupService implements CrudOperations {
+
+public class GroupService {
 
 
-    @Override
-    public void add(Object entity) {
-
-    }
-
-    @Override
-    public void removeById(int id) {
-
-    }
 }
 

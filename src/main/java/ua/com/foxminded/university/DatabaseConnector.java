@@ -4,12 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static ua.com.foxminded.university.Constans.*;
+
 public class DatabaseConnector {
     private static DatabaseConnector databaseConnector = new DatabaseConnector();
     private static Connection connection;
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "1234";
-    private static final String URL = "jdbc:postgresql://localhost:5432/university";
 
     private DatabaseConnector() {
         try {
@@ -21,7 +20,7 @@ public class DatabaseConnector {
         }
     }
 
-    public static Connection getConnection() {
+    public static synchronized Connection getConnection() {
         return connection;
     }
 

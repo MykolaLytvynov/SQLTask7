@@ -1,16 +1,22 @@
 package ua.com.foxminded.university.service;
 
-import ua.com.foxminded.university.dao.CrudOperations;
 
-public class StudentService implements CrudOperations {
+import ua.com.foxminded.university.dao.StudentDAO;
+import ua.com.foxminded.university.entities.Student;
 
-    @Override
-    public void add(Object entity) {
+public class StudentService{
 
+    private final StudentDAO studentDAO;
+
+    public StudentService(StudentDAO studentDAO) {
+        this.studentDAO = studentDAO;
     }
 
-    @Override
-    public void removeById(int id) {
-
+    public Student save (Student student) {
+        Student saved = studentDAO.save(student);
+        return saved;
     }
+
+
+    // Будут реализованы и остальные методы
 }

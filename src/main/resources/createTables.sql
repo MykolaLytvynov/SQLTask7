@@ -4,7 +4,7 @@ CREATE TABLE studentgroup (
 );
 CREATE TABLE students (
     student_id SERIAL PRIMARY KEY,
-    group_id character(5) NOT NULL,
+    group_id character(5),
     first_name character (50) NOT NULL,
     last_name character (50) NOT NULL
 );
