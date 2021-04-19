@@ -11,6 +11,12 @@ public class Course {
         this.courseDescription = courseDescription;
     }
 
+    public Course(int courseId, String courseName, String courseDescription) {
+        this.courseId = courseId;
+        this.courseName = courseName;
+        this.courseDescription = courseDescription;
+    }
+
     public int getCourseId() {
         return courseId;
     }
@@ -33,5 +39,14 @@ public class Course {
 
     public void setCourseDescription(String courseDescription) {
         this.courseDescription = courseDescription;
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "courseId=" + courseId +
+                ", courseName='" + courseName + '\'' +
+                ", courseDescription='" + courseDescription + '\'' +
+                '}';
     }
 }

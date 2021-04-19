@@ -4,6 +4,8 @@ package ua.com.foxminded.university.service;
 import ua.com.foxminded.university.dao.StudentDAO;
 import ua.com.foxminded.university.entities.Student;
 
+import java.util.List;
+
 public class StudentService{
 
     private final StudentDAO studentDAO;
@@ -17,6 +19,34 @@ public class StudentService{
         return saved;
     }
 
+    public Student findById (int idStudent) {
+        return studentDAO.findById(idStudent);
+    }
 
-    // Будут реализованы и остальные методы
+    public boolean existsById (int idStudent) {
+        return studentDAO.existsById(idStudent);
+    }
+
+    public List<Student> findAll () {
+        List <Student> students = studentDAO.findAll();
+        return students;
+    }
+
+    public long count () {
+        return studentDAO.count();
+    }
+
+    public void deleteById (int idStudent) {
+        studentDAO.deleteById(idStudent);
+    }
+
+    public void delete(Student student) {
+        studentDAO.delete(student);
+    }
+
+    public void deleteAll() {
+        studentDAO.deleteAll();
+    }
+
+
 }

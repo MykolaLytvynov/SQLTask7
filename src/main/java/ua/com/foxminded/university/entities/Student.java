@@ -11,6 +11,13 @@ public class Student {
         this.lastName = lastName;
     }
 
+    public Student(int studentId, int group_id, String firstName, String lastName) {
+        this.studentId = studentId;
+        this.group_id = group_id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public int getStudentId() {
         return studentId;
     }

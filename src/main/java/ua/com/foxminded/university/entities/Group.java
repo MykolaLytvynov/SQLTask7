@@ -9,6 +9,11 @@ public class Group {
         this.group = group;
     }
 
+    public Group(int id, String group) {
+        this.id = id;
+        this.group = group;
+    }
+
     public int getId() {
         return id;
     }
@@ -23,5 +28,13 @@ public class Group {
 
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "id=" + id +
+                ", group='" + group + '\'' +
+                '}';
     }
 }

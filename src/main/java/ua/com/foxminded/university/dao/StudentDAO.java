@@ -3,15 +3,19 @@ package ua.com.foxminded.university.dao;
 import ua.com.foxminded.university.entities.Student;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class StudentDAO implements CrudOperations<Student, Integer> {
 
-private final Connection connection;
-private static final String ADD_STUDENT = "INSERT INTO students (first_name, last_name) values (?, ?)";
-private static final String GET_ALL = "Select * FROM students";
-private static final String FIND_BY_ID = "Select * FROM students WHERE student_id = '?'";
+    private final Connection connection;
+    private static final String ADD_STUDENT = "INSERT INTO students (first_name, last_name) VALUES (?, ?)";
+    private static final String FIND_ALL = "Select * FROM students";
+    private static final String FIND_BY_ID = "Select * FROM students WHERE student_id = ?";
+    private static final String EXISTS_BY_ID = "Select * FROM students WHERE EXISTS (Select * FROM students WHERE student_id = ?)";
+    private static final String COUNT = "SELECT COUNT(student_id) FROM students";
+    private static final String DELETE_STUDENT = "DELETE FROM students WHERE student_id = ?";
+    private static final String DELETE_ALL = "DELETE FROM students";
 
     public StudentDAO(Connection connection) {
         this.connection = connection;
@@ -34,45 +38,110 @@ private static final String FIND_BY_ID = "Select * FROM students WHERE student_i
     }
 
     @Override
-    public Student findById(Integer integer) {
-//        try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID)) {
-//            ResultSet resultSet = statement.getResultSet();
-//        resultSet.next();
-//
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-        return null;
+    public Student findById(Integer idStudent) {
+        Student foundStudent = new Student(null, null);
+        try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID)) {
+            statement.setInt(1, idStudent);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                foundStudent.setStudentId(resultSet.getInt("student_id"));
+                foundStudent.setGroup_id(resultSet.getInt("group_id"));
+                foundStudent.setFirstName(resultSet.getString("first_name"));
+                foundStudent.setLastName(resultSet.getString("last_name"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return foundStudent;
     }
 
+
     @Override
-    public boolean existsById(Integer student) {
-        return false;
+    public boolean existsById(Integer idStudent) {
+        boolean existsStudent = false;
+        try (PreparedStatement statement = connection.prepareStatement(EXISTS_BY_ID)) {
+            statement.setInt(1, idStudent);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                existsStudent = true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return existsStudent;
     }
 
     @Override
     public List<Student> findAll() {
-        return null;
+        List<Student> students = new ArrayList<>();
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(FIND_ALL);
+            while (resultSet.next()) {
+
+
+                students.add(new Student(resultSet.getInt("student_id"),
+                        resultSet.getInt("group_id"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name")));
+
+// Или так, если не использовать два конструктура в поджо классе
+//                Student student = new Student(null, null);
+//                student.setStudentId(resultSet.getInt("student_id"));
+//                student.setGroup_id(resultSet.getInt("group_id"));
+//                student.setFirstName(resultSet.getString("first_name"));
+//                student.setLastName(resultSet.getString("last_name"));
+//                students.add(student);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return students;
     }
 
     @Override
     public long count() {
-        return 0;
+        long count = 0;
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(COUNT);
+            while (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return count;
     }
 
     @Override
-    public void deleteById(Integer student) {
-
+    public void deleteById(Integer idStudent) {
+        try { PreparedStatement statement = connection.prepareStatement(DELETE_STUDENT);
+                statement.setInt(1, idStudent);
+                statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void delete(Student student) {
-
+        try { PreparedStatement statement = connection.prepareStatement(DELETE_STUDENT);
+            statement.setInt(1, student.getStudentId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void deleteAll() {
-
+        try {Statement statement = connection.createStatement();
+             statement.executeUpdate(DELETE_ALL);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 
