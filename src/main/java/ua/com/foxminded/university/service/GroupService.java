@@ -3,6 +3,7 @@ package ua.com.foxminded.university.service;
 import ua.com.foxminded.university.dao.CrudOperations;
 import ua.com.foxminded.university.dao.GroupDAO;
 import ua.com.foxminded.university.entities.Group;
+import ua.com.foxminded.university.exception.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,7 @@ public class GroupService {
     }
 
     public Group findById(Integer idGroup) {
-        return groupDAO.findById(idGroup);
+        return groupDAO.findById(idGroup).orElseThrow(() -> new NotFoundException("Group not found by id=" + idGroup));
     }
 
     public List<Group> findAll() {

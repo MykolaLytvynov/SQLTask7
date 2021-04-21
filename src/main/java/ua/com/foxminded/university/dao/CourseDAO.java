@@ -5,6 +5,7 @@ import ua.com.foxminded.university.entities.Course;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CourseDAO implements CrudOperations<Course, Integer> {
 
@@ -41,8 +42,8 @@ public class CourseDAO implements CrudOperations<Course, Integer> {
     }
 
     @Override
-    public Course findById(Integer idCourse) {
-        Course foundCourse = new Course(null, null);
+    public Optional<Course> findById(Integer idCourse) {
+        Course foundCourse = null;
 
         try {
             PreparedStatement statement = connection.prepareStatement(FIND_BY_ID);
@@ -50,14 +51,14 @@ public class CourseDAO implements CrudOperations<Course, Integer> {
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                foundCourse.setCourseId(resultSet.getInt("course_id"));
-                foundCourse.setCourseName(resultSet.getString("course_name"));
-                foundCourse.setCourseDescription(resultSet.getString("course_description"));
+                foundCourse = new Course(resultSet.getInt("course_id"),
+                        resultSet.getString("course_name"),
+                        resultSet.getString("course_description"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return foundCourse;
+        return Optional.ofNullable(foundCourse);
     }
 
     @Override

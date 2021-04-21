@@ -5,6 +5,7 @@ import ua.com.foxminded.university.entities.Group;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class GroupDAO implements CrudOperations<Group, Integer>{
 
@@ -39,20 +40,20 @@ public class GroupDAO implements CrudOperations<Group, Integer>{
     }
 
     @Override
-    public Group findById(Integer idGroup) {
-        Group foundGroup = new Group(null);
+    public Optional<Group> findById(Integer idGroup) {
+        Group foundGroup = null;
         try {
             PreparedStatement statement = connection.prepareStatement(FIND_BY_ID);
             statement.setInt(1, idGroup);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                foundGroup.setId(resultSet.getInt("group_id"));
-                foundGroup.setGroup(resultSet.getString("group_name"));
+                foundGroup = new Group(resultSet.getInt("group_id"),
+                        resultSet.getString("group_name"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return foundGroup;
+        return Optional.ofNullable(foundGroup);
     }
 
     @Override

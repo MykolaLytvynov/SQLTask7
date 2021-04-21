@@ -1,5 +1,7 @@
 package ua.com.foxminded.university;
 
+import org.postgresql.util.PSQLException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,7 +18,7 @@ public class DatabaseConnector {
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
             }
         } catch (SQLException e) {
-            System.err.println("Connection failure");
+            throw new RuntimeException("Database Connection failure");
         }
     }
 

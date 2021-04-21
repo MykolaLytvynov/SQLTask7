@@ -3,6 +3,7 @@ package ua.com.foxminded.university.service;
 
 import ua.com.foxminded.university.dao.StudentDAO;
 import ua.com.foxminded.university.entities.Student;
+import ua.com.foxminded.university.exception.NotFoundException;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class StudentService{
     }
 
     public Student findById (int idStudent) {
-        return studentDAO.findById(idStudent);
+        return studentDAO.findById(idStudent).orElseThrow(() -> new NotFoundException("Student not found by id=" + idStudent));
     }
 
     public boolean existsById (int idStudent) {

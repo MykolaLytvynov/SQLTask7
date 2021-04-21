@@ -5,6 +5,7 @@ import ua.com.foxminded.university.entities.Student;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class StudentDAO implements CrudOperations<Student, Integer> {
 
@@ -20,7 +21,6 @@ public class StudentDAO implements CrudOperations<Student, Integer> {
     public StudentDAO(Connection connection) {
         this.connection = connection;
     }
-
 
     @Override
     public Student save(Student student) {
@@ -38,21 +38,21 @@ public class StudentDAO implements CrudOperations<Student, Integer> {
     }
 
     @Override
-    public Student findById(Integer idStudent) {
-        Student foundStudent = new Student(null, null);
+    public Optional<Student> findById(Integer idStudent) {
+        Student foundStudent = null;
         try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID)) {
             statement.setInt(1, idStudent);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                foundStudent.setStudentId(resultSet.getInt("student_id"));
-                foundStudent.setGroup_id(resultSet.getInt("group_id"));
-                foundStudent.setFirstName(resultSet.getString("first_name"));
-                foundStudent.setLastName(resultSet.getString("last_name"));
-            }
+                foundStudent = new Student(resultSet.getInt("student_id"),
+                        resultSet.getInt("group_id"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name"));
+         }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return foundStudent;
+        return Optional.ofNullable(foundStudent);
     }
 
 
@@ -74,25 +74,15 @@ public class StudentDAO implements CrudOperations<Student, Integer> {
     @Override
     public List<Student> findAll() {
         List<Student> students = new ArrayList<>();
-
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(FIND_ALL);
             while (resultSet.next()) {
 
-
                 students.add(new Student(resultSet.getInt("student_id"),
                         resultSet.getInt("group_id"),
                         resultSet.getString("first_name"),
                         resultSet.getString("last_name")));
-
-// Или так, если не использовать два конструктура в поджо классе
-//                Student student = new Student(null, null);
-//                student.setStudentId(resultSet.getInt("student_id"));
-//                student.setGroup_id(resultSet.getInt("group_id"));
-//                student.setFirstName(resultSet.getString("first_name"));
-//                student.setLastName(resultSet.getString("last_name"));
-//                students.add(student);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
