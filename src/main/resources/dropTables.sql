@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS students, studentgroup, courses, students_courses

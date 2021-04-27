@@ -7,16 +7,16 @@ import java.util.List;
 
 public class CourseCreator {
 
-    Course biology = new Course("Biology", "What is biology");
-    Course mathematics = new Course("Mathematics", "What is mathematics");
-    Course english = new Course("English", "What is english");
-    Course theoreticalMechanics = new Course("Theoretical Mechanics", "What is theoretical Mechanics");
-    Course computerScience = new Course("Computer Science", "What is computer Science");
-    Course physics = new Course("Physics", "What is physics");
-    Course management = new Course("Management", "What is management");
-    Course history = new Course("History", "What is history");
-    Course astrology = new Course("Astrology", "What is astrology");
-    Course economy = new Course("Economy", "What is economy");
+    private Course biology = new Course("Biology", "What is biology");
+    private Course mathematics = new Course("Mathematics", "What is mathematics");
+    private Course english = new Course("English", "What is english");
+    private Course theoreticalMechanics = new Course("Theoretical Mechanics", "What is theoretical Mechanics");
+    private Course computerScience = new Course("Computer Science", "What is computer Science");
+    private Course physics = new Course("Physics", "What is physics");
+    private Course management = new Course("Management", "What is management");
+    private Course history = new Course("History", "What is history");
+    private Course astrology = new Course("Astrology", "What is astrology");
+    private Course economy = new Course("Economy", "What is economy");
 
 
     public List<Course> getCourseList () {

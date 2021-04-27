@@ -2,7 +2,7 @@ package ua.com.foxminded.university.entities;
 
 public class Student {
     private int studentId;
-    private int group_id;
+    private Integer group_id;
     private String firstName;
     private String lastName;
 
@@ -26,7 +26,7 @@ public class Student {
         this.studentId = studentId;
     }
 
-    public int getGroup_id() {
+    public Integer getGroup_id() {
         return group_id;
     }
 

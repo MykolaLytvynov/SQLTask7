@@ -10,7 +10,7 @@ import java.util.Optional;
 public class StudentDAO implements CrudOperations<Student, Integer> {
 
     private final Connection connection;
-    private static final String ADD_STUDENT = "INSERT INTO students (first_name, last_name) VALUES (?, ?)";
+    private static final String ADD_STUDENT = "INSERT INTO students (group_id, first_name, last_name) VALUES (?, ?, ?)";
     private static final String FIND_ALL = "Select * FROM students";
     private static final String FIND_BY_ID = "Select * FROM students WHERE student_id = ?";
     private static final String EXISTS_BY_ID = "Select * FROM students WHERE EXISTS (Select * FROM students WHERE student_id = ?)";
@@ -25,8 +25,13 @@ public class StudentDAO implements CrudOperations<Student, Integer> {
     @Override
     public Student save(Student student) {
         try (PreparedStatement statement = connection.prepareStatement(ADD_STUDENT, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, student.getFirstName());
-            statement.setString(2, student.getLastName());
+            if (student.getGroup_id() == null || student.getGroup_id() == 0) {
+                statement.setNull(1, Types.INTEGER);
+            } else {
+                statement.setInt(1, student.getGroup_id());
+            }
+            statement.setString(2, student.getFirstName());
+            statement.setString(3, student.getLastName());
             statement.executeUpdate();
             ResultSet getKey = statement.getGeneratedKeys();
             getKey.next();
