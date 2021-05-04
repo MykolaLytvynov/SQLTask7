@@ -25,6 +25,10 @@ public class GroupService {
         return groupDAO.findById(idGroup).orElseThrow(() -> new NotFoundException("Group not found by id=" + idGroup));
     }
 
+    public boolean existsById (Integer idGroup) {
+        return groupDAO.existsById(idGroup);
+    }
+
     public List<Group> findAll() {
         return groupDAO.findAll();
     }

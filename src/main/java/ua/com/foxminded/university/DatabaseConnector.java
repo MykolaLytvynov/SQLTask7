@@ -9,20 +9,14 @@ import java.sql.SQLException;
 import static ua.com.foxminded.university.Constans.*;
 
 public class DatabaseConnector {
-    private static DatabaseConnector databaseConnector = new DatabaseConnector();
-    private static Connection connection;
+    Connection connection;
 
-    private DatabaseConnector() {
+    public Connection getConnection() {
         try {
-            if (connection == null) {
-                connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            }
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (SQLException e) {
             throw new RuntimeException("Database Connection failure. Cause: " + e.getMessage());
         }
-    }
-
-    public static synchronized Connection getConnection() {
         return connection;
     }
 

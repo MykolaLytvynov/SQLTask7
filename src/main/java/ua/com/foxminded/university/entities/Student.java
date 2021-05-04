@@ -2,7 +2,7 @@ package ua.com.foxminded.university.entities;
 
 public class Student {
     private int studentId;
-    private Integer group_id;
+    private Integer groupId;
     private String firstName;
     private String lastName;
 
@@ -11,9 +11,9 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public Student(int studentId, int group_id, String firstName, String lastName) {
+    public Student(int studentId, int groupId, String firstName, String lastName) {
         this.studentId = studentId;
-        this.group_id = group_id;
+        this.groupId = groupId;
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -26,12 +26,12 @@ public class Student {
         this.studentId = studentId;
     }
 
-    public Integer getGroup_id() {
-        return group_id;
+    public Integer getGroupId() {
+        return groupId;
     }
 
-    public void setGroup_id(int group_id) {
-        this.group_id = group_id;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public String getFirstName() {
@@ -54,7 +54,7 @@ public class Student {
     public String toString() {
         return "Student{" +
                 "studentId=" + studentId +
-                ", group_id=" + group_id +
+                ", group_id=" + groupId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 '}';

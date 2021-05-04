@@ -80,7 +80,7 @@ public class GroupDAO implements CrudOperations<Group, Integer>{
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(FIND_ALL);
             while (resultSet.next()) {
-                groups.add(new Group(resultSet.getInt("group_id"), resultSet.getString("group_name")));
+                groups.add(new Group(resultSet.getInt("group_id"), resultSet.getString("group_name").trim()));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

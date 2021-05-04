@@ -2,39 +2,27 @@ package ua.com.foxminded.university;
 
 import ua.com.foxminded.university.dao.CourseDAO;
 import ua.com.foxminded.university.dao.GroupDAO;
-import ua.com.foxminded.university.dao.StudentCourseDAO;
 import ua.com.foxminded.university.dao.StudentDAO;
 import ua.com.foxminded.university.entities.Course;
 import ua.com.foxminded.university.entities.Group;
 import ua.com.foxminded.university.entities.Student;
 import ua.com.foxminded.university.service.CourseService;
 import ua.com.foxminded.university.service.GroupService;
-import ua.com.foxminded.university.service.StudentCourseServise;
 import ua.com.foxminded.university.service.StudentService;
-
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.*;
+
+import static ua.com.foxminded.university.Constans.*;
 
 
 public class App {
 
     public static void main(String[] args) throws IOException {
 
-        int numberOfStudents = 200;
-        int numberOfGroup = 10;
-
-        Connection connection = DatabaseConnector.getConnection();
-
-
-//        есть сомнения по чтению скриптов
-//        я сделал такой класс, кот. читает один запрос (нужно мой файл со всеми запросами раздробить
-//        на меньшие файлы с единственным запросом), но что-то мне подсказывает, что это не норм идея.
-//
-//        String pathSqlFileCreateTables = "src/main/resources/createTableStudentgroup.sql";
-//        ScriptManager scriptManager =new ScriptManager(connection);
-//        scriptManager.executeScript(pathSqlFileCreateTables);
+        DatabaseConnector databaseConnector = new DatabaseConnector();
+        Connection connection = databaseConnector.getConnection();
 
         StudentDAO studentDAO = new StudentDAO(connection);
         StudentService studentService = new StudentService(studentDAO);
@@ -43,51 +31,21 @@ public class App {
         CourseDAO courseDAO = new CourseDAO(connection);
         CourseService courseService = new CourseService(courseDAO);
 
-        Random random = new Random();
+        DataInitializer dataInitializer = new DataInitializer(groupService, studentService, courseService, connection);
+        dataInitializer.initDb();
 
-        GroupGenerator groupGenerator = new GroupGenerator();
-        List<Group> groupList = groupGenerator.getGeneratedGroup(numberOfGroup);
-        groupList.forEach(group -> groupService.save(group));
+        List<Group> groupList = dataInitializer.generateGroups(NUMBER_OF_GROUP);
+        dataInitializer.saveGroupsInDb(groupList);
 
-        StudentGenerator studentGenerator = new StudentGenerator();
-        List<Student> studentList = studentGenerator.getStudents(numberOfStudents);
-        studentList.forEach(student -> {
-            int randomNumber = random.nextInt(numberOfGroup+2);
-            if (randomNumber != numberOfGroup + 1) {
-                student.setGroup_id(groupList.get(random.nextInt(numberOfGroup)).getId());
-            }
-            studentService.save(student);
-        });
+        List<Student> studentList = dataInitializer.generateStudents(NUMBER_OF_STUDENTS);
+        dataInitializer.addStudentsToGroups(groupList, studentList);
+        dataInitializer.saveStudentsInDb(studentList);
 
-        CourseCreator courseCreator = new CourseCreator();
-        List<Course> courseList = courseCreator.getCourseList();
-        courseList.forEach(course -> courseService.save(course));
+        List<Course> courseList = dataInitializer.createCourses();
+        dataInitializer.saveCoursesInDb(courseList);
+        dataInitializer.asignStudentsToCourses(studentList);
 
-        StudentCourseDAO studentCourseDAO = new StudentCourseDAO(connection);
-        StudentCourseServise studentCourseServise = new StudentCourseServise(studentCourseDAO);
-
- //        распределить на курсы
-
-
-        int numberOfCourse = (int) courseService.count();
-        int i = 1;
-        Set<Integer> s = new HashSet<>();
-
-        while (i <= numberOfStudents ) {
-            int courseOneStudent = random.nextInt(3)+1;
-            for (int j = 1; j <= courseOneStudent; j++) {
-                while (true) {
-                    int numberCoursesOneStudent = random.nextInt(numberOfCourse)+1;
-                    if (s.contains(numberCoursesOneStudent) == false) {
-                        s.add(numberCoursesOneStudent);
-                        studentCourseServise.save(i, numberCoursesOneStudent);
-                        break;
-                    }
-                }
-            }
-            s.clear();
-            i++;
-        }
-
+        Menu menu = new Menu(studentService, groupService, courseService);
+        menu.printMenu();
     }
 }

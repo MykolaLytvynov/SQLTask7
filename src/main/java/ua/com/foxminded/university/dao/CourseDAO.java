@@ -52,8 +52,8 @@ public class CourseDAO implements CrudOperations<Course, Integer> {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 foundCourse = new Course(resultSet.getInt("course_id"),
-                        resultSet.getString("course_name"),
-                        resultSet.getString("course_description"));
+                        resultSet.getString("course_name").trim(),
+                        resultSet.getString("course_description").trim());
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -86,8 +86,8 @@ public class CourseDAO implements CrudOperations<Course, Integer> {
             ResultSet resultSet = statement.executeQuery(FIND_ALL);
             while (resultSet.next()) {
                 courses.add(new Course(resultSet.getInt("course_id"),
-                        resultSet.getString("course_name"),
-                        resultSet.getString("course_description")));
+                        resultSet.getString("course_name").trim(),
+                        resultSet.getString("course_description").trim()));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

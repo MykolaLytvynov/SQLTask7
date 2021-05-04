@@ -27,11 +27,14 @@ public class ScriptManager {
             query += string + " ";
         }
 
-        try {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(query);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        String[] arrayQuery = query.split(";");
+        for (String sqlQuery : arrayQuery) {
+            try {
+                Statement statement = connection.createStatement();
+                statement.executeUpdate(sqlQuery);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
