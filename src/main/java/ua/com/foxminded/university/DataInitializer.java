@@ -8,49 +8,51 @@ import ua.com.foxminded.university.service.GroupService;
 import ua.com.foxminded.university.service.StudentService;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import static ua.com.foxminded.university.Constans.*;
-
+import static ua.com.foxminded.university.Constants.PATH_SQL_FILE_CREATE_TABLES;
 
 public class DataInitializer {
+    private final Random random;
     private final GroupService groupService;
-    private final StudentService studentService;
+    private final ScriptManager scriptManager;
+    private final CourseCreator courseCreator;
     private final CourseService courseService;
-    private final Connection connection;
-    Random random = new Random();
+    private final StudentService studentService;
+    private final GroupGenerator groupGenerator;
+    private final StudentGenerator studentGenerator;
 
-    public DataInitializer(GroupService groupService, StudentService studentService, CourseService courseService, Connection connection) {
+    public DataInitializer(Random random, ScriptManager scriptManager, StudentService studentService,
+                           StudentGenerator studentGenerator, CourseService courseService, CourseCreator courseCreator,
+                           GroupGenerator groupGenerator, GroupService groupService) {
+        this.random = random;
         this.groupService = groupService;
-        this.studentService = studentService;
+        this.scriptManager = scriptManager;
+        this.courseCreator = courseCreator;
         this.courseService = courseService;
-        this.connection = connection;
+        this.studentService = studentService;
+        this.groupGenerator = groupGenerator;
+        this.studentGenerator = studentGenerator;
     }
 
     public void initDb() throws IOException {
-        ScriptManager scriptManager = new ScriptManager(connection);
-
         scriptManager.executeScript(PATH_SQL_FILE_CREATE_TABLES);
     }
 
     public List<Group> generateGroups(int numberOfGroups) {
-        GroupGenerator groupGenerator = new GroupGenerator();
         List<Group> groupList = groupGenerator.getGeneratedGroup(numberOfGroups);
         return groupList;
     }
 
     public List<Student> generateStudents(int numberOfStudents) {
-        StudentGenerator studentGenerator = new StudentGenerator();
         List<Student> studentList = studentGenerator.getStudents(numberOfStudents);
         return studentList;
     }
 
     public List<Course> createCourses() {
-        CourseCreator courseCreator = new CourseCreator();
         return courseCreator.getCourseList();
     }
 
@@ -66,7 +68,6 @@ public class DataInitializer {
 
     public void saveGroupsInDb(List<Group> groupList) {
         groupList.forEach(group -> groupService.save(group));
-        groupList = groupService.findAll();
     }
 
     public void saveStudentsInDb(List<Student> studentList) {

@@ -1,23 +1,36 @@
 package ua.com.foxminded.university;
 
-import org.postgresql.util.PSQLException;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
-import static ua.com.foxminded.university.Constans.*;
+import static java.util.Optional.ofNullable;
 
 public class DatabaseConnector {
-    Connection connection;
+    private static final String ERR_MESSAGE = "Couldn't create connection, cause: %s";
 
-    public Connection getConnection() {
-        try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (SQLException e) {
-            throw new RuntimeException("Database Connection failure. Cause: " + e.getMessage());
-        }
-        return connection;
+    private final String url;
+    private final String login;
+    private final String password;
+    private Connection connection;
+
+    public enum SourceType {POSTGRES, H2}
+
+    public DatabaseConnector(String url, String login, String password) {
+        this.url = url;
+        this.login = login;
+        this.password = password;
     }
 
+    public Connection getConnection() {
+        return ofNullable(connection).orElseGet(this::createNewConnection);
+    }
+
+    private Connection createNewConnection() {
+        try {
+            connection = DriverManager.getConnection(url, login, password);
+            return connection;
+        } catch (Exception e) {
+            throw new RuntimeException(String.format(ERR_MESSAGE, e.getLocalizedMessage()));
+        }
+    }
 }

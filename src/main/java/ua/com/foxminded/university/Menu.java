@@ -5,12 +5,11 @@ import ua.com.foxminded.university.service.CourseService;
 import ua.com.foxminded.university.service.GroupService;
 import ua.com.foxminded.university.service.StudentService;
 
-import java.sql.Connection;
 import java.util.Locale;
 import java.util.Scanner;
 
 
-import static ua.com.foxminded.university.Constans.*;
+import static ua.com.foxminded.university.Constants.*;
 
 public class Menu {
 

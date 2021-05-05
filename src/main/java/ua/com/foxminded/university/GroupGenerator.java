@@ -7,9 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static ua.com.foxminded.university.Constans.*;
+import static ua.com.foxminded.university.Constants.SYMBOLS;
 
 public class GroupGenerator {
+    private final Random randomNumber;
+
+    public GroupGenerator(Random random) {
+        randomNumber = random;
+    }
 
     public List<Group> getGeneratedGroup(int numberOfGroup) {
         List<Group> groupList = new ArrayList<>();
@@ -21,8 +26,6 @@ public class GroupGenerator {
     }
 
     private String getRandomSymbols(int numberOfSymbols) {
-
-        Random randomNumber = new Random();
         String randomSymbols = new String();
         for (int i = 0; i < numberOfSymbols; i++) {
             randomSymbols += String.valueOf(SYMBOLS.charAt(randomNumber.nextInt(SYMBOLS.length())));
@@ -31,8 +34,6 @@ public class GroupGenerator {
     }
 
     private String getRandomNumbers(int numberOfumbers) {
-
-        Random randomNumber = new Random();
         String randomNumbers = new String();
         for (int i = 0; i < numberOfumbers; i++) {
             randomNumbers += randomNumber.nextInt(10);
