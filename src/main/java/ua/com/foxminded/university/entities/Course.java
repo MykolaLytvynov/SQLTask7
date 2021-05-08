@@ -1,5 +1,7 @@
 package ua.com.foxminded.university.entities;
 
+import java.util.Objects;
+
 public class Course {
 
     private int courseId;
@@ -48,5 +50,18 @@ public class Course {
                 ", courseName='" + courseName + '\'' +
                 ", courseDescription='" + courseDescription + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return courseId == course.courseId && courseName.equals(course.courseName) && courseDescription.equals(course.courseDescription);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(courseId, courseName, courseDescription);
     }
 }
