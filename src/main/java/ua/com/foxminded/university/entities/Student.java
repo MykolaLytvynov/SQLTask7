@@ -13,7 +13,7 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public Student(int studentId, int groupId, String firstName, String lastName) {
+    public Student(int studentId, Integer groupId, String firstName, String lastName) {
         this.studentId = studentId;
         this.groupId = groupId;
         this.firstName = firstName;
@@ -32,7 +32,7 @@ public class Student {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
 
