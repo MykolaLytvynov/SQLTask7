@@ -115,8 +115,8 @@ public class MenuController {
         }
 
         Student newStudent = new Student(0, Integer.valueOf(groupId), name, lastName);
-        studentService.save(newStudent);
-        System.out.println("\n---New student added\n");
+        Student addedStudent = studentService.save(newStudent);
+        System.out.println("\n---New student added. ID: " + addedStudent.getStudentId() + "\n");
     }
 
     public void deleteStudentByStudentId() {

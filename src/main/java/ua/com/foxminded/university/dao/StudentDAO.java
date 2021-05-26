@@ -206,7 +206,7 @@ public class StudentDAO implements CrudOperations<Student, Integer> {
             statement.setInt(1, countStudent);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                groupsWithLessOrEqualsStudent.put(resultSet.getInt("group_id"), resultSet.getInt("count"));
+                groupsWithLessOrEqualsStudent.put(resultSet.getInt(1), resultSet.getInt(2));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
