@@ -40,26 +40,22 @@ class GroupDAOTest {
     @Test
     @DisplayName("Save group in Bd")
     void saveShouldSaveGroupInBd() throws SQLException {
+        Group expected = new Group(1, "ce-22");
 
         groupDAO.save(new Group("ce-22"));
 
-        Group expected = new Group(1, "ce-22");
-
         Group result = null;
-
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM studentgroup WHERE group_id = 1");
         while (resultSet.next()) {
             result = new Group(resultSet.getInt("group_id"), resultSet.getString("group_name"));
         }
-
         assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("Save Null instead of group in Bd")
     void saveShouldReturnExceptionWhenEnterNull() {
-
         assertThrows(RuntimeException.class, () -> groupDAO.save(null));
     }
 
@@ -67,9 +63,7 @@ class GroupDAOTest {
     @Test
     @DisplayName("Find group by existing id")
     void findByIdShouldReturnGroupWhenEnterExistingId() throws SQLException {
-
         Group expected = new Group(1, "ce-22");
-
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO studentgroup (group_id, group_name) VALUES (1, 'ce-22')");
 
@@ -82,9 +76,7 @@ class GroupDAOTest {
     @Test
     @DisplayName("Find group by non-existing id")
     void findByIdShouldReturnNullWhenEnterNonExistingId() throws SQLException {
-
         Group expected = null;
-
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM studentgroup WHERE group_id = 244");
         while (resultSet.next()) {
@@ -100,12 +92,9 @@ class GroupDAOTest {
     @Test
     @DisplayName("Exists By Id")
     void existsById() throws SQLException {
-
+        boolean expected = false;
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO studentgroup (group_id, group_name) VALUES (3, 'ce-22')");
-
-        boolean expected = false;
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM studentgroup WHERE EXISTS (Select * FROM studentgroup WHERE group_id = 3)");
         if (resultSet.next()) {
             expected = true;
@@ -120,9 +109,7 @@ class GroupDAOTest {
     @Test
     @DisplayName("Does not exist by id")
     void existsByIdShouldReturnFalseWhenNotExistsById() throws SQLException {
-
         boolean expected = false;
-
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM studentgroup WHERE EXISTS (Select * FROM studentgroup WHERE group_id = 244)");
         if (resultSet.next()) {
@@ -138,14 +125,11 @@ class GroupDAOTest {
     @Test
     @DisplayName("Find all groups")
     void findAllShouldReturnAllGroups() throws SQLException {
-
+        List<Group> expected = new ArrayList<>();
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO studentgroup (group_id, group_name) VALUES (1, 'ce-22')");
         statement.execute("INSERT INTO studentgroup (group_id, group_name) VALUES (2, 'fr-12')");
         statement.executeUpdate("INSERT INTO studentgroup (group_id, group_name) VALUES (3, 'fd-13')");
-
-        List<Group> expected = new ArrayList<>();
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM studentgroup");
         while (resultSet.next()) {
             expected.add(new Group(resultSet.getInt("group_id"), resultSet.getString("group_name")));
@@ -159,69 +143,60 @@ class GroupDAOTest {
     @Test
     @DisplayName("Count groups")
     void countShouldReturnCountGroups() throws SQLException {
-
+        long expectedResult  = 3;
+        long realResult = 0;
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO studentgroup (group_id, group_name) VALUES (1, 'ce-22')");
         statement.execute("INSERT INTO studentgroup (group_id, group_name) VALUES (2, 'fr-12')");
         statement.executeUpdate("INSERT INTO studentgroup (group_id, group_name) VALUES (3, 'fd-13')");
-
-        long expected = 0;
-
         ResultSet resultSet = statement.executeQuery("SELECT COUNT(group_id) FROM studentgroup");
         while (resultSet.next()) {
-            expected = resultSet.getInt(1);
+            realResult = resultSet.getInt(1);
         }
 
-        long result = groupDAO.count();
+        long actualResult = groupDAO.count();
 
-        assertEquals(expected, result);
+        assertEquals(expectedResult, actualResult);
+        assertEquals(realResult, actualResult);
     }
 
     @Test
     @DisplayName("Delete one group by id")
     void deleteByIdShouldDeleteOneGroupById() throws SQLException {
-
+        Group expected = null;
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO studentgroup (group_id, group_name) VALUES (3, 'fd-13')");
 
         groupDAO.deleteById(3);
 
-        Group expected = null;
-
         Group result = null;
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM studentgroup WHERE group_id = 3");
         while (resultSet.next()) {
             result = new Group(resultSet.getInt("group_id"), resultSet.getString("group_name"));
         }
-
         assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("Delete one group when specifying a group")
     void deleteShouldDeleteOneGroupWhenSpecifyingGroup() throws SQLException {
-
+        Group expected = null;
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO studentgroup (group_id, group_name) VALUES (3, 'fd-13')");
 
         groupDAO.delete(new Group(3, "fd-13"));
 
-        Group expected = null;
-
         Group result = null;
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM studentgroup WHERE group_id = 3");
         while (resultSet.next()) {
             result = new Group(resultSet.getInt("group_id"), resultSet.getString("group_name"));
         }
-
         assertEquals(expected, result);
     }
 
     @Test
     void deleteAllShouldDeleteAllGroups() throws SQLException {
-
+        long expected = 0;
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO studentgroup (group_id, group_name) VALUES (1, 'ce-22')");
         statement.execute("INSERT INTO studentgroup (group_id, group_name) VALUES (2, 'fr-12')");
@@ -229,15 +204,11 @@ class GroupDAOTest {
 
         groupDAO.deleteAll();
 
-        long expected = 0;
-
         long result = 0;
-
         ResultSet resultSet = statement.executeQuery("SELECT COUNT(group_id) FROM studentgroup");
         while (resultSet.next()) {
             result = resultSet.getInt(1);
         }
-
         assertEquals(expected, result);
     }
 }

@@ -42,12 +42,11 @@ class CourseDAOTest {
     @Test
     @DisplayName("Save course in Bd")
     void saveShouldReturnSaveCourseInBd() throws SQLException{
-        courseDAO.save(new Course("Physics", "What is physics"));
-
         Course expected = new Course(1, "Physics", "What is physics");
 
-        Course result = null;
+        courseDAO.save(new Course("Physics", "What is physics"));
 
+        Course result = null;
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM courses WHERE course_id = 1");
         while (resultSet.next()) {
@@ -55,23 +54,19 @@ class CourseDAOTest {
                     resultSet.getString("course_name"),
                     resultSet.getString("course_description"));
         }
-
         assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("Save Null instead of course in Bd")
     void saveShouldReturnExceptionWhenEnterNull() {
-
         assertThrows(RuntimeException.class, () -> courseDAO.save(null));
     }
 
     @Test
     @DisplayName("Find course by existing id")
     void findByIdShouldReturnCourseWhenEnterExistingId() throws SQLException{
-
         Course expected = new Course(3, "Physics", "What is physics");
-
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO courses (course_id, course_name, course_description) VALUES (3, 'Physics','What is physics')");
 
@@ -83,9 +78,7 @@ class CourseDAOTest {
     @Test
     @DisplayName("Find course by non-existing id")
     void findByIdShouldReturnNullWhenEnterNonExistingId() throws SQLException {
-
         Course expected = null;
-
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM courses WHERE course_id = 244");
         while (resultSet.next()) {
@@ -103,12 +96,9 @@ class CourseDAOTest {
     @Test
     @DisplayName("Exists By Id")
     void existsByIdShouldReturnTrueWhenExistsById() throws SQLException {
-
+        boolean expected = false;
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO courses (course_id, course_name, course_description) VALUES (3, 'Physics','What is physics')");
-
-        boolean expected = false;
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM courses WHERE EXISTS (Select * FROM courses WHERE course_id = 3)");
         if (resultSet.next()) {
             expected = true;
@@ -123,9 +113,7 @@ class CourseDAOTest {
     @Test
     @DisplayName("Does not exist by id")
     void existsByIdShouldReturnFalseWhenNotExistsById() throws SQLException {
-
         boolean expected = false;
-
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM courses WHERE EXISTS (Select * FROM courses WHERE course_id = 244)");
         if (resultSet.next()) {
@@ -141,14 +129,11 @@ class CourseDAOTest {
     @Test
     @DisplayName("Find all courses")
     void findAllShouldReturnAllCourses() throws SQLException {
-
+        List<Course> expected = new ArrayList<>();
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (1, 'Physics','What is physics')");
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (2, 'Economy','What is economy')");
         statement.executeUpdate("INSERT INTO courses (course_id, course_name, course_description) VALUES (3, 'Astrology','What is astrology')");
-
-        List<Course> expected = new ArrayList<>();
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM courses");
         while (resultSet.next()) {
             expected.add(new Course(resultSet.getInt("course_id"),
@@ -164,74 +149,65 @@ class CourseDAOTest {
     @Test
     @DisplayName("Count courses")
     void countShouldReturnCountCourses() throws SQLException{
-
+        long expectedResult  = 3;
+        long realResult = 0;
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (1, 'Physics','What is physics')");
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (2, 'Economy','What is economy')");
         statement.executeUpdate("INSERT INTO courses (course_id, course_name, course_description) VALUES (3, 'Astrology','What is astrology')");
-
-        long expected = 0;
-
         ResultSet resultSet = statement.executeQuery("SELECT COUNT(course_id) FROM courses");
         while (resultSet.next()) {
-            expected = resultSet.getInt(1);
+            realResult  = resultSet.getInt(1);
         }
 
-        long result = courseDAO.count();
+        long actualResult = courseDAO.count();
 
-        assertEquals(expected, result);
+        assertEquals(expectedResult, actualResult);
+        assertEquals(realResult, actualResult);
     }
 
     @Test
     @DisplayName("Delete one course by id")
     void deleteByIdShouldDeleteOneCourseById() throws SQLException {
-
+        Course expected = null;
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO courses (course_id, course_name, course_description) VALUES (3, 'Astrology','What is astrology')");
 
         courseDAO.deleteById(3);
 
-        Course expected = null;
-
         Course result = null;
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM courses WHERE course_id = 3");
         while (resultSet.next()) {
             result = new Course(resultSet.getInt("course_id"),
                     resultSet.getString("course_name"),
                     resultSet.getString("course_description"));
         }
-
         assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("Delete one course when specifying a course")
     void deleteShouldDeleteOneCourseWhenSpecifyingCourse() throws SQLException {
-
+        Course expected = null;
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO courses (course_id, course_name, course_description) VALUES (3, 'Astrology','What is astrology')");
 
         courseDAO.delete(new Course(3, "Astrology","What is astrology"));
 
-        Course expected = null;
-
         Course result = null;
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM courses WHERE course_id = 3");
         while (resultSet.next()) {
             result = new Course(resultSet.getInt("course_id"),
                     resultSet.getString("course_name"),
                     resultSet.getString("course_description"));
         }
-
         assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("Delete all courses")
     void deleteAllShouldDeleteAllCourses() throws SQLException{
-
+        long expected = 0;
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (1, 'Physics','What is physics')");
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (2, 'Economy','What is economy')");
@@ -239,15 +215,11 @@ class CourseDAOTest {
 
         courseDAO.deleteAll();
 
-        long expected = 0;
-
         long result = 0;
-
         ResultSet resultSet = statement.executeQuery("SELECT COUNT(course_id) FROM courses");
         while (resultSet.next()) {
             result = resultSet.getInt(1);
         }
-
         assertEquals(expected, result);
     }
 }

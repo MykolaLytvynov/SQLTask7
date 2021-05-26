@@ -51,13 +51,11 @@ class StudentDAOTest {
     @Test
     @DisplayName("Save student in Bd")
     void saveShouldSaveStudentInBd() throws SQLException {
+        Student expected = new Student(1, null, "Robert", "Kohl");
 
         studentDAO.save(new Student("Robert", "Kohl"));
 
-        Student expected = new Student(1, null, "Robert", "Kohl");
-
         Student result = null;
-
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM students WHERE student_id = 1");
         while (resultSet.next()) {
@@ -69,24 +67,19 @@ class StudentDAOTest {
                 result.setGroupId(null);
             }
         }
-
         assertEquals(expected, result);
-
     }
 
     @Test
     @DisplayName("Save Null instead of student in Bd")
     void saveShouldReturnExceptionWhenEnterNull() {
-
         assertThrows(RuntimeException.class, () -> studentDAO.save(null));
     }
 
     @Test
     @DisplayName("Find student by existing id")
     void findByIdShouldReturnStudentWhenEnterExistingId() throws SQLException {
-
         Student expected = new Student(3, 2, "Viktor", "Drop");
-
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (3, 2, 'Viktor', 'Drop')");
 
@@ -99,9 +92,7 @@ class StudentDAOTest {
     @Test
     @DisplayName("Find student by non-existing id")
     void findByIdShouldReturnNullWhenEnterNonExistingId() throws SQLException {
-
         Student expected = null;
-
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM students WHERE student_id = 244");
         while (resultSet.next()) {
@@ -120,12 +111,9 @@ class StudentDAOTest {
     @Test
     @DisplayName("Exists By Id")
     void existsByIdShouldReturnTrueWhenExistsById() throws SQLException {
-
+        boolean expected = false;
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (3, 2, 'Viktor', 'Drop')");
-
-        boolean expected = false;
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM students WHERE EXISTS (Select * FROM students WHERE student_id = 3)");
         if (resultSet.next()) {
             expected = true;
@@ -140,9 +128,7 @@ class StudentDAOTest {
     @Test
     @DisplayName("Does not exist by id")
     void existsByIdShouldReturnFalseWhenNotExistsById() throws SQLException {
-
         boolean expected = false;
-
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM students WHERE EXISTS (Select * FROM students WHERE student_id = 244)");
         if (resultSet.next()) {
@@ -158,15 +144,11 @@ class StudentDAOTest {
     @Test
     @DisplayName("Find all students")
     void findAllShouldReturnAllStudents() throws SQLException {
-
+        List<Student> expected = new ArrayList<>();
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (1, 2, 'Viktor', 'Drop')");
         statement.execute("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (2, 4, 'Katya', 'Vanil')");
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (3, 21, 'Karla', 'Aderedes')");
-
-
-        List<Student> expected = new ArrayList<>();
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM students");
         while (resultSet.next()) {
             expected.add(new Student(resultSet.getInt("student_id"),
@@ -184,35 +166,32 @@ class StudentDAOTest {
     @Test
     @DisplayName("Count students")
     void countShouldReturnCountStudents() throws SQLException {
-
+        long expectedResult  = 3;
+        long realResult = 0;
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (1, 2, 'Viktor', 'Drop')");
         statement.execute("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (2, 4, 'Katya', 'Vanil')");
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (3, 21, 'Karla', 'Aderedes')");
-
-        long expected = 0;
-
         ResultSet resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM students");
         while (resultSet.next()) {
-            expected = resultSet.getInt(1);
+            realResult = resultSet.getInt(1);
         }
 
-        long result = studentDAO.count();
+        long actualResult = studentDAO.count();
 
-        assertEquals(expected, result);
+        assertEquals(expectedResult, actualResult);
+        assertEquals(realResult, actualResult);
     }
 
 
     @Test
     @DisplayName("Delete one student by id")
     void deleteByIdShouldDeleteOneStudentById() throws SQLException {
-
+        Student expected = null;
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (3, 21, 'Karla', 'Aderedes')");
 
         studentDAO.deleteById(3);
-
-        Student expected = null;
 
         Student result = null;
         ResultSet resultSet = statement.executeQuery("SELECT * FROM students WHERE student_id = 3");
@@ -222,7 +201,6 @@ class StudentDAOTest {
                     resultSet.getString("first_name"),
                     resultSet.getString("last_name"));
         }
-
         assertEquals(expected, result);
     }
 
@@ -230,13 +208,11 @@ class StudentDAOTest {
     @Test
     @DisplayName("Delete one student when specifying a student")
     void deleteShouldDeleteOneStudentWhenSpecifyingStudent() throws SQLException {
-
+        Student expected = null;
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (3, 21, 'Karla', 'Aderedes')");
 
         studentDAO.delete(new Student(3, 21, "Karla", "Aderedes"));
-
-        Student expected = null;
 
         Student result = null;
         ResultSet resultSet = statement.executeQuery("SELECT * FROM students WHERE student_id = 3");
@@ -246,14 +222,13 @@ class StudentDAOTest {
                     resultSet.getString("first_name"),
                     resultSet.getString("last_name"));
         }
-
         assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("Delete all students")
     void deleteAllShouldDeleteAllStudent() throws SQLException {
-
+        long expected = 0;
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (1, 2, 'Viktor', 'Drop')");
         statement.execute("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (2, 4, 'Katya', 'Vanil')");
@@ -261,45 +236,36 @@ class StudentDAOTest {
 
         studentDAO.deleteAll();
 
-        long expected = 0;
-
         long result = 0;
-
         ResultSet resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM students");
         while (resultSet.next()) {
             result = resultSet.getInt(1);
         }
-
         assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("Asign student on course")
     void asignStudentOnCourseShouldAsignStudentOnCourse() throws SQLException {
-
+        Map<Integer, Integer> expected = new HashMap<>();
+        expected.put(3, 1);
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (1, 'Biology','Biology')");
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (3, 21, 'Karla', 'Aderedes')");
 
         studentDAO.asignStudentOnCourse(3, 1);
 
-        Map<Integer, Integer> expected = new HashMap<>();
-        expected.put(3, 1);
-
         Map<Integer, Integer> result = new HashMap<>();
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM students_courses");
         while (resultSet.next()) {
             result.put(resultSet.getInt("student_id"), resultSet.getInt("course_id"));
         }
-
         assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("Asign student on course when course does not exist")
     void asignStudentOnCourseShouldReturnExceptionWhenCourseDoesNotExist() throws SQLException {
-
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (3, 21, 'Karla', 'Aderedes')");
 
@@ -309,7 +275,6 @@ class StudentDAOTest {
     @Test
     @DisplayName("Asign student on course when student does not exist")
     void asignStudentOnCourseShouldReturnExceptionWhenStudentDoesNotExist() throws SQLException {
-
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT INTO courses (course_id, course_name, course_description) VALUES (1, 'Biology','Biology')");
 
@@ -320,45 +285,36 @@ class StudentDAOTest {
     @Test
     @DisplayName("Remove Student From One Course")
     void removeStudentFromOneOfHisOrHerCourses() throws SQLException {
-
+        Map<Integer, Integer> expected = new HashMap<>();
+        expected.put(2, 2);
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (1, 'Biology','Biology')");
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (2, 'Physics','Physics')");
         statement.execute("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (1, 1, 'Nina', 'Vahl')");
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (2, 2, 'Karla', 'Aderedes')");
-
         statement.execute("INSERT into students_courses (student_id, course_id) values (1, 1)");
         statement.executeUpdate("INSERT into students_courses (student_id, course_id) values (2, 2)");
 
         studentDAO.removeStudentFromOneOfHisOrHerCourses(1, 1);
 
-        Map<Integer, Integer> expected = new HashMap<>();
-        expected.put(2, 2);
-
         Map<Integer, Integer> result = new HashMap<>();
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM students_courses");
         while (resultSet.next()) {
             result.put(resultSet.getInt("student_id"), resultSet.getInt("course_id"));
         }
-
         assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("Get list courses of one student by id")
     void getListCourseOfOneStudentByIdShouldReturnListCoursesOfOneStudent() throws SQLException {
-
+        List<Integer> expected = new ArrayList<>();
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (1, 'Biology','Biology')");
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (2, 'Physics','Physics')");
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (1, 2, 'Karla', 'Aderedes')");
-
         statement.execute("INSERT into students_courses (student_id, course_id) values (1, 1)");
         statement.executeUpdate("INSERT into students_courses (student_id, course_id) values (1, 2)");
-
-        List<Integer> expected = new ArrayList<>();
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM students_courses WHERE student_id = 1");
         while (resultSet.next()) {
             expected.add(resultSet.getInt("course_id"));
@@ -373,7 +329,6 @@ class StudentDAOTest {
     @Test
     @DisplayName("Get list courses of one student by id does not exist")
     void getListCourseOfOneStudentByIdNotShouldReturnExceptionWhenIdDoesNotExist() throws SQLException {
-
         assertDoesNotThrow(() -> studentDAO.getListCourseOfOneStudentById(12));
     }
 
@@ -381,27 +336,22 @@ class StudentDAOTest {
     @Test
     @DisplayName("Remove one course of one student")
     void removeOneCourseOfOneStudentShouldReturnListWithoutOneCousre() throws SQLException {
-
+        List<Integer> expected = new ArrayList<>();
+        expected.add(2);
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (1, 'Biology','Biology')");
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (2, 'Physics','Physics')");
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (1, 2, 'Karla', 'Aderedes')");
-
         statement.execute("INSERT into students_courses (student_id, course_id) values (1, 1)");
         statement.executeUpdate("INSERT into students_courses (student_id, course_id) values (1, 2)");
 
         studentDAO.removeOneCourseOfOneStudent(1, 1);
 
-        List<Integer> expected = new ArrayList<>();
-        expected.add(2);
-
         List<Integer> result = new ArrayList<>();
-
         ResultSet resultSet = statement.executeQuery("SELECT * FROM students_courses WHERE student_id = 1");
         while (resultSet.next()) {
             result.add(resultSet.getInt("course_id"));
         }
-
         assertEquals(expected, result);
     }
 
@@ -409,7 +359,7 @@ class StudentDAOTest {
     @Test
     @DisplayName("Find groups with less or equals student")
     void findGroupsWithLessOrEqualsStudentShouldReturnMapGroupsWithLessOrEqualsStudent() throws SQLException {
-
+        Map<Integer, Integer> expected = new HashMap<>();
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (1, 1, 'Viktor', 'Drop')");
         statement.execute("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (2, 2, 'Katya', 'Vanil')");
@@ -418,9 +368,6 @@ class StudentDAOTest {
         statement.execute("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (5, 1, 'Gergie', 'Billig')");
         statement.execute("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (6, 3, 'Vlad', 'Taulll')");
         statement.executeUpdate("INSERT INTO students (student_id, group_id, first_name, last_name) VALUES (7, null, 'Karla', 'Aderedes')");
-
-        Map<Integer, Integer> expected = new HashMap<>();
-
         ResultSet resultSet = statement.executeQuery("SELECT group_id, COUNT(*) FROM students GROUP BY group_id HAVING COUNT(group_id) <= 2 AND COUNT(group_id) != 0");
         while (resultSet.next()) {
             expected.put(resultSet.getInt("group_id"), resultSet.getInt(2));
@@ -434,7 +381,7 @@ class StudentDAOTest {
     @Test
     @DisplayName("Find students related to course")
     void findStudentsRelatedToCourse() throws SQLException {
-
+        List<Student> expected = new ArrayList<>();
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (1, 'Biology','Biology')");
         statement.execute("INSERT INTO courses (course_id, course_name, course_description) VALUES (2, 'History','History')");
@@ -445,9 +392,6 @@ class StudentDAOTest {
         statement.execute("INSERT into students_courses (student_id, course_id) values (1, 1)");
         statement.execute("INSERT into students_courses (student_id, course_id) values (2, 1)");
         statement.executeUpdate("INSERT into students_courses (student_id, course_id) values (3, 2)");
-
-        List<Student> expected = new ArrayList<>();
-
         ResultSet resultSet = statement.executeQuery("Select students.* from students\n" +
                 "INNER JOIN students_courses ON students.student_id = students_courses.student_id\n" +
                 "INNER JOIN courses  ON courses.course_id = students_courses.course_id\n" +
